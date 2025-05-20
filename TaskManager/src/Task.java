@@ -1,9 +1,9 @@
 public class Task {
-    String name;
-    String description;
-    int id;
-    Status status;
-    TaskType type;
+    public String name;
+    public String description;
+    public  int id;
+    public Status status;
+    public TaskType type;
 
 
     Task(String name, String description, Status status, TaskType type){
@@ -15,6 +15,11 @@ public class Task {
 
     public void setStatus(Status status){
         this.status = status;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.id;
     }
 
     @Override
