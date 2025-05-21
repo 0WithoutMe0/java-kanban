@@ -11,11 +11,11 @@ public class Main {
         taskManager.addEpic(epic1);
         Epic epic2 = new Epic("Вуз", "Сходить", Status.NEW, TaskType.EPIC, new ArrayList<>());
         taskManager.addEpic(epic2);
-        Subtask subtask1 = new Subtask("Картошка", "Сварить", Status.NEW, TaskType.SUBTASK, epic1.id);
+        Subtask subtask1 = new Subtask("Картошка", "Сварить", Status.NEW, TaskType.SUBTASK, epic1.getId());
         taskManager.addSubtask(subtask1);
-        Subtask subtask2 = new Subtask("Селедка", "Купить", Status.NEW, TaskType.SUBTASK, epic1.id);
+        Subtask subtask2 = new Subtask("Селедка", "Купить", Status.NEW, TaskType.SUBTASK, epic1.getId());
         taskManager.addSubtask(subtask2);
-        Subtask subtask3 = new Subtask("Задача 1", "Проснуться", Status.NEW, TaskType.SUBTASK, epic2.id);
+        Subtask subtask3 = new Subtask("Задача 1", "Проснуться", Status.NEW, TaskType.SUBTASK, epic2.getId());
         taskManager.addSubtask(subtask3);
 
 
@@ -31,14 +31,15 @@ public class Main {
         taskManager.updateSubtask(subtask3);
         System.out.println(taskManager.getAllEpics());
 
-        System.out.println(taskManager.getListOfEpic(epic1.id));
-        System.out.println(taskManager.getEpicById(epic2.id));
-        System.out.println(taskManager.getEpicById(epic1.id));
-        taskManager.removeEpicById(epic1.id);
+        System.out.println(taskManager.getListOfEpic(epic1.getId()));
+        System.out.println(taskManager.getEpicById(epic2.getId()));
+        System.out.println(taskManager.getEpicById(epic1.getId()));
+        taskManager.removeEpicById(epic1.getId());
         taskManager.removeAllTasks();
 
         System.out.println(taskManager.getAllTasks());
         System.out.println(taskManager.getAllEpics());
         System.out.println(taskManager.getAllSubtasks());
+
     }
 }

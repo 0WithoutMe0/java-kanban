@@ -1,10 +1,20 @@
 import java.util.ArrayList;
 
 public class Epic extends Task{
-    public ArrayList<Subtask> subtasks;
+
+
+    private ArrayList<Subtask> subtasks;
 
     Epic(String name, String description, Status status, TaskType type, ArrayList<Subtask> subtasks){
         super(name, description, status, type);
+        this.subtasks = subtasks;
+    }
+
+    public ArrayList<Subtask> getSubtasks() {
+        return subtasks;
+    }
+
+    public void setSubtasks(ArrayList<Subtask> subtasks) {
         this.subtasks = subtasks;
     }
 
@@ -13,21 +23,21 @@ public class Epic extends Task{
         boolean progressFlag = false;
 
         for(Subtask subtask : subtasks){
-            if(subtask.status == Status.DONE){
+            if(subtask.getStatus() == Status.DONE){
                 countDoneTasks++;
-            }else if(subtask.status == Status.IN_PROGRESS){
+            }else if(subtask.getStatus() == Status.IN_PROGRESS){
                 progressFlag = true;
                 break;
             }
         }
         if(countDoneTasks == subtasks.size()){
-            this.status = Status.DONE;
+            setStatus(Status.DONE);
             System.out.println("Статус большой задачи DONE");
         }else if(progressFlag){
-            this.status = Status.IN_PROGRESS;
+            setStatus(Status.IN_PROGRESS);
             System.out.println("Статус большой задачи IN_PROGRESS");
         }else{
-            this.status = Status.NEW;
+            setStatus(Status.NEW);
             System.out.println("Статус большой задачи NEW");
         }
     }
@@ -35,11 +45,11 @@ public class Epic extends Task{
     @Override
     public String toString() {
         return "Epic{" +
-                "name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", id=" + id +
-                ", status=" + status +
-                ", type=" + type +
+                "name='" + getName() + '\'' +
+                ", description='" + getDescription() + '\'' +
+                ", id=" + getId() +
+                ", status=" + getStatus() +
+                ", type=" + getType() +
                 ", subtasks.length=" + subtasks.size() +
                 '}';
     }

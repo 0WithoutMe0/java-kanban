@@ -1,9 +1,10 @@
 public class Task {
-    public String name;
-    public String description;
-    public  int id;
-    public Status status;
-    public TaskType type;
+
+    private String name;
+    private String description;
+    private int id;
+    private Status status;
+    private TaskType type;
 
 
     Task(String name, String description, Status status, TaskType type){
@@ -11,6 +12,42 @@ public class Task {
         this.description = description;
         this.status = status;
         this.type = type;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public TaskType getType() {
+        return type;
+    }
+
+    public void setType(TaskType type) {
+        this.type = type;
+    }
+
+    public Status getStatus(){
+        return status;
     }
 
     public void setStatus(Status status){
