@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
-        TaskManager taskManager = new TaskManager();
+        TaskManager taskManager = new InMemoryTaskManager();
         Task task1 = new Task("Лаба 1", "Сделать лабу 1", Status.NEW, TaskType.MIDDLE_TASK);
         taskManager.addTask(task1);
         Task task2 = new Task("Лаба 2", "Сделать лабу 2", Status.NEW, TaskType.MIDDLE_TASK);
