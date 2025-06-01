@@ -1,3 +1,5 @@
+package TaskManager;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -18,7 +20,7 @@ class EpicTest {
     Epic epic2;
 
     @BeforeEach
-     void beforeEach(){
+    void beforeEach(){
         managers = new Managers();
         memoryTaskManager = (InMemoryTaskManager) managers.getDefault();
         task1 = new Task("Задача 1", "ДЗ 1", Status.NEW, TaskType.MIDDLE_TASK);
