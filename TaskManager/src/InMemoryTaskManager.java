@@ -55,7 +55,6 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void removeAllTasks(){
         tasks.clear();
-        System.out.println("Все средние задачи удалены!");
     }
 
     @Override
@@ -67,7 +66,6 @@ public class InMemoryTaskManager implements TaskManager {
             epic.getSubtasks().clear();
         }
         epics.clear();
-        System.out.println("Все большие задачи и их подзадачи удалены!");
     }
 
     @Override
@@ -77,47 +75,33 @@ public class InMemoryTaskManager implements TaskManager {
             epic.updateEpicStatus();
         }
         subtasks.clear();
-        System.out.println("Все подзадачи  удалены");
     }
 
     @Override
     public Task getTaskById(int id){
-        if(tasks.containsKey(id)){
-            historyManager.add(tasks.get(id));
-            return tasks.get(id);
-        }else{
-            System.out.println("Задачи с таким id не существует");
-            return null;
-        }
+        Task task = tasks.get(id);
+        historyManager.add(task);
+        return task;
     }
 
     @Override
     public Epic getEpicById(int id){
-        if(epics.containsKey(id)){
-            historyManager.add(epics.get(id));
-            return epics.get(id);
-        }else{
-            System.out.println("Большой задачи с таким id не существует");
-            return null;
-        }
+        Epic epic = epics.get(id);
+        historyManager.add(epic);
+        return epic;
     }
 
     @Override
     public Subtask getSubtaskById(int id){
-        if(subtasks.containsKey(id)){
-            historyManager.add(subtasks.get(id));
-            return subtasks.get(id);
-        }else{
-            System.out.println("Подзадачи с таким id не существует");
-            return null;
-        }
+        Subtask subtask = subtasks.get(id);
+        historyManager.add(subtask);
+        return subtask;
     }
 
     @Override
     public void addTask(Task task){
         task.setId(countId);
         tasks.put(countId++, task);
-        System.out.println("Задача была успешно добавлена");
     }
 
     @Override
@@ -125,7 +109,6 @@ public class InMemoryTaskManager implements TaskManager {
         epic.setId(countId);
         epic.updateEpicStatus(); //расчет статуса для эпика
         epics.put(countId++, epic);
-        System.out.println("Большая задача была успешно добавлена");
     }
 
     @Override
@@ -134,35 +117,28 @@ public class InMemoryTaskManager implements TaskManager {
         subtasks.put(countId++, subtask);
         epics.get(subtask.getEpicId()).getSubtasks().add(subtask); //Внес подзадачу в эпик
         epics.get(subtask.getEpicId()).updateEpicStatus();
-        System.out.println("Подзадача была успешно добавлена");
     }
 
      @Override
      public void updateTask(Task task){
          tasks.put(task.getId(), task);
-         System.out.println("Задача была обновлена");
      }
 
     @Override
     public void updateEpic(Epic epic){
         epics.put(epic.getId(), epic);
-        System.out.println("Большая задача была обновлена");
     }
 
     @Override
     public void updateSubtask(Subtask subtask){
         subtasks.put(subtask.getId(), subtask);
         epics.get(subtask.getEpicId()).updateEpicStatus();
-        System.out.println("Подзадача была обновлена");
     }
 
     @Override
     public void removeTaskById(int id){
         if(tasks.containsKey(id)){
             tasks.remove(id);
-            System.out.println("Задача была успешно удалена");
-        }else{
-            System.out.println("Задачи с таким id не существует");
         }
     }
 
@@ -173,9 +149,6 @@ public class InMemoryTaskManager implements TaskManager {
                 subtasks.remove(subtask.getId()); //удаляю подзадачи
             }
             epics.remove(id);
-            System.out.println("Большая задача была успешно удалена");
-        }else{
-            System.out.println("Большой задачи с таким id не существует");
         }
     }
 
@@ -185,9 +158,6 @@ public class InMemoryTaskManager implements TaskManager {
             epics.get(subtasks.get(id).getEpicId()).getSubtasks().remove(subtasks.get(id)); // удаляю подзадачу из эпика
             epics.get(subtasks.get(id).getEpicId()).updateEpicStatus();// Обнавляю статус эпика
             subtasks.remove(id);
-            System.out.println("Подзадача была успешно удалена");
-        }else{
-            System.out.println("Подзадачи с таким id не существует");
         }
     }
 
