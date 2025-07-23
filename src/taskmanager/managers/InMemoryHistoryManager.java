@@ -1,9 +1,8 @@
-package TaskManager.Managers;
+package taskmanager.managers;
 
 
 
-import TaskManager.Managers.HistoryManager;
-import TaskManager.Tasks.*;
+import taskmanager.Tasks.*;
 import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager {

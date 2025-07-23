@@ -1,7 +1,7 @@
-package TaskManager.tests;
+package taskmanager.tests;
 
-import TaskManager.Managers.*;
-import TaskManager.Tasks.*;
+import taskmanager.managers.*;
+import taskmanager.Tasks.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

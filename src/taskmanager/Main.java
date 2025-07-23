@@ -1,9 +1,9 @@
-package TaskManager;
+package taskmanager;
 
 
-import TaskManager.Managers.InMemoryTaskManager;
-import TaskManager.Managers.TaskManager;
-import TaskManager.Tasks.*;
+import taskmanager.managers.InMemoryTaskManager;
+import taskmanager.managers.TaskManager;
+import taskmanager.Tasks.*;
 import java.util.ArrayList;
 
 public class Main {

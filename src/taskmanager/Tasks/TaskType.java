@@ -1,4 +1,4 @@
-package TaskManager.Tasks;
+package taskmanager.Tasks;
 
 public enum TaskType {
     SUBTASK,

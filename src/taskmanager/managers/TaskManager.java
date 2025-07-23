@@ -1,8 +1,8 @@
-package TaskManager.Managers;
+package taskmanager.managers;
 
 
-import TaskManager.Tasks.*;
-import java.util.ArrayList;
+import taskmanager.Tasks.*;
+
 import java.util.List;
 
 public interface TaskManager {
