@@ -35,7 +35,7 @@ public class Epic extends Task {
         if (countDoneTasks == subtasks.size()) {
             setStatus(Status.DONE);
             System.out.println("Статус большой задачи DONE");
-        } else if(progressFlag) {
+        } else if (progressFlag) {
             setStatus(Status.IN_PROGRESS);
             System.out.println("Статус большой задачи IN_PROGRESS");
         } else {
