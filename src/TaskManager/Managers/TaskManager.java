@@ -1,5 +1,7 @@
-package TaskManager;
+package TaskManager.Managers;
 
+
+import TaskManager.Tasks.*;
 import java.util.ArrayList;
 import java.util.List;
 

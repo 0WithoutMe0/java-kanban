@@ -1,4 +1,4 @@
-package TaskManager;
+package TaskManager.Tasks;
 
 import java.util.ArrayList;
 
@@ -7,7 +7,7 @@ public class Epic extends Task{
 
     private ArrayList<Subtask> subtasks;
 
-    Epic(String name, String description, Status status, TaskType type, ArrayList<Subtask> subtasks){
+    public Epic(String name, String description, Status status, TaskType type, ArrayList<Subtask> subtasks){
         super(name, description, status, type);
         this.subtasks = subtasks;
     }

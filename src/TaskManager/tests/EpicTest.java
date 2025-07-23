@@ -1,10 +1,13 @@
-package TaskManager;
+package TaskManager.tests;
 
+import TaskManager.Managers.*;
+import TaskManager.Tasks.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -36,6 +39,11 @@ class EpicTest {
         subtask2 = new Subtask("Субзадача 2", "ДЗ 2", Status.NEW, TaskType.SUBTASK, epic2.getId());
         memoryTaskManager.addSubtask(subtask2);
 
+    }
+
+    @Test
+    void correctCountId(){
+        assertEquals(6, memoryTaskManager.getCountId());
     }
 
     @Test
@@ -110,9 +118,8 @@ class EpicTest {
 
         List<Task> history = memoryTaskManager.getHistory();
 
-        assertEquals(2, history.size());
-        assertEquals("Задача 1", history.get(0).getName());
-        assertEquals("Задача 1.1", history.get(1).getName());
+        assertEquals(1, history.size());
+        assertEquals("Задача 1.1", history.get(0).getName());
     }
 
     @Test
@@ -135,12 +142,74 @@ class EpicTest {
     }
 
     @Test
-    void add() {
-        InMemoryHistoryManager historyManager = (InMemoryHistoryManager) managers.getDefaultHistory();
-        Task task = new Task("Test addNewTask", "Test addNewTask description", Status.NEW, TaskType.MIDDLE_TASK);
-        historyManager.add(task);
-        final List<Task> history = historyManager.getHistory();
-        assertNotNull(history, "После добавления задачи, история не должна быть пустой.");
-        assertEquals(1, history.size(), "После добавления задачи, история не должна быть пустой.");
+    void epicStatusShouldUpdateBasedOnSubtasks() {
+        Subtask subtask3 = new Subtask("Субзадача 3", "ДЗ 3", Status.IN_PROGRESS, TaskType.SUBTASK, epic1.getId());
+        memoryTaskManager.addSubtask(subtask3);
+        assertEquals(Status.IN_PROGRESS, epic1.getStatus(), "Статус эпика должен быть IN_PROGRESS");
+
+        subtask1.setStatus(Status.DONE);
+        memoryTaskManager.updateSubtask(subtask1);
+        subtask3.setStatus(Status.DONE);
+        memoryTaskManager.updateSubtask(subtask3);
+        System.out.println(memoryTaskManager.getEpicById(epic1.getId()).getSubtasks());
+        assertEquals(Status.DONE, epic1.getStatus(), "Статус эпика должен быть DONE");
     }
+
+
+    @Test
+    void removeAllTasks(){
+        assertEquals(List.of(task1, task2), memoryTaskManager.getAllTasks());
+        assertEquals(List.of(subtask1, subtask2), memoryTaskManager.getAllSubtasks());
+        assertEquals(List.of(epic1, epic2), memoryTaskManager.getAllEpics());
+
+        memoryTaskManager.removeAllTasks();
+        memoryTaskManager.removeAllSubtasks();
+        memoryTaskManager.removeAllEpics();
+
+        assertEquals(List.of(), memoryTaskManager.getAllTasks());
+        assertEquals(List.of(), memoryTaskManager.getAllSubtasks());
+        assertEquals(List.of(), memoryTaskManager.getAllEpics());
+    }
+
+
+    //Для HistoryManager
+    @Test
+    void emptyList(){
+        assertEquals(0, memoryTaskManager.getHistory().size());
+    }
+
+    @Test
+    void historyShouldNotContainDuplicates() {
+        memoryTaskManager.getTaskById(task1.getId());
+        memoryTaskManager.getTaskById(task1.getId());
+
+        assertEquals(1, memoryTaskManager.getHistory().size());
+    }
+
+
+    @Test
+    void removeTaskShouldCorrectlyUpdateHistory() {
+        memoryTaskManager.getTaskById(task1.getId());
+        assertEquals(1, memoryTaskManager.getHistory().size(), "История должна содержать 1 элемент");
+
+        memoryTaskManager.removeTaskById(task1.getId());
+        assertEquals(0, memoryTaskManager.getHistory().size(), "История должна быть пустой после удаления");
+        assertTrue(memoryTaskManager.getHistory().isEmpty(), "История должна быть пустой");
+
+
+        memoryTaskManager.getSubtaskById(subtask1.getId());
+        memoryTaskManager.getTaskById(task2.getId());
+        memoryTaskManager.getEpicById(epic1.getId());
+
+        assertEquals(List.of(subtask1, task2, epic1), memoryTaskManager.getHistory(), "Неверный состав истории");
+
+        memoryTaskManager.removeTaskById(task2.getId());
+        assertEquals(List.of(subtask1, epic1), memoryTaskManager.getHistory(), "Неверная история после удаления");
+
+
+        memoryTaskManager.getSubtaskById(subtask1.getId());
+        assertEquals(List.of(epic1, subtask1), memoryTaskManager.getHistory());
+    }
+
+
 }

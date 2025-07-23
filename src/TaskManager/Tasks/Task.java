@@ -1,4 +1,4 @@
-package TaskManager;
+package TaskManager.Tasks;
 
 public class Task {
 
@@ -9,7 +9,7 @@ public class Task {
     private TaskType type;
 
 
-    Task(String name, String description, Status status, TaskType type){
+    public Task(String name, String description, Status status, TaskType type){
         this.name = name;
         this.description = description;
         this.status = status;

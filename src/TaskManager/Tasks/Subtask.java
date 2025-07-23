@@ -1,11 +1,11 @@
-package TaskManager;
+package TaskManager.Tasks;
 
 public class Subtask extends Task{
 
 
     private int epicId;
 
-    Subtask(String name, String description, Status status, TaskType type, int epicId){
+    public Subtask(String name, String description, Status status, TaskType type, int epicId){
         super(name, description, status, type);
         this.epicId = epicId;
 

@@ -1,4 +1,4 @@
-package TaskManager;
+package TaskManager.Managers;
 
 public class Managers {
     public static TaskManager getDefault() {
