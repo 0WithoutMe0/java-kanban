@@ -79,7 +79,7 @@ class EpicTest {
     }
 
     @Test
-    void InMemoryTaskManagerFunctional() {
+    void inMemoryTaskManagerFunctional() {
         assertEquals(task1, memoryTaskManager.getTaskById(0));
         assertEquals(epic1, memoryTaskManager.getEpicById(2));
         assertEquals(subtask1, memoryTaskManager.getSubtaskById(4));
