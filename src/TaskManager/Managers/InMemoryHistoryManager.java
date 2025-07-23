@@ -14,58 +14,58 @@ public class InMemoryHistoryManager implements HistoryManager {
     private Node tail;
 
 
-    InMemoryHistoryManager(){
+    InMemoryHistoryManager() {
         nodeMap = new HashMap<>();
     }
 
-    public void linkLast(Task task){
-        if(nodeMap.containsKey(task.getId())){
+    public void linkLast(Task task) {
+        if (nodeMap.containsKey(task.getId())) {
             removeNode(nodeMap.get(task.getId()));
             nodeMap.remove(task.getId());
         }
         Node newNode = new Node(task, tail, null);
-        if(tail == null){
+        if (tail == null) {
             head = newNode;
-        }else{
+        } else {
             tail.next = newNode;
         }
         tail = newNode;
         nodeMap.put(task.getId(), newNode);
     }
 
-    public List<Task> getTasks(){
+    public List<Task> getTasks() {
         List<Task> arr = new ArrayList<>();
         Node current = head;
-        while(current != null){
+        while (current != null) {
             arr.add(current.task);
             current = current.next;
         }
         return arr;
     }
 
-    void removeNode(Node node){
-        if(head == null){
+    void removeNode(Node node) {
+        if (head == null) {
             return;
         }
 
-        if(node.equals(head)){
+        if (node.equals(head)) {
             head = head.next;
-            if(head != null){
+            if (head != null) {
                 head.prev = null;
-            }else{
+            } else {
                 tail = null;
             }
-        }else if(node.equals(tail)){
+        } else if (node.equals(tail)) {
             tail = tail.prev;
             tail.next = null;
-        }else{
+        } else {
             node.prev.next = node.next;
             node.next.prev = node.prev;
         }
     }
 
-    public void add(Task task){
-        if(task == null){
+    public void add(Task task) {
+        if (task == null) {
             return;
         }
         linkLast(task);
@@ -76,7 +76,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         removeNode(nodeMap.get(id));
     }
 
-    public List<Task> getHistory(){
+    public List<Task> getHistory() {
          //список доступен только для чтения
          return getTasks();
     }
