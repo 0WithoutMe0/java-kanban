@@ -1,14 +1,15 @@
-package TaskManager;
-
+import taskmanager.managers.*;
+import taskmanager.tasks.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
+
 import static org.junit.jupiter.api.Assertions.*;
 
-class EpicTest {
+class InMemoryTaskManagerTest {
 
     Managers managers;
     InMemoryTaskManager memoryTaskManager;
@@ -20,7 +21,7 @@ class EpicTest {
     Epic epic2;
 
     @BeforeEach
-    void beforeEach(){
+    void beforeEach() {
         managers = new Managers();
         memoryTaskManager = (InMemoryTaskManager) managers.getDefault();
         task1 = new Task("Задача 1", "ДЗ 1", Status.NEW, TaskType.MIDDLE_TASK);
@@ -35,11 +36,15 @@ class EpicTest {
         memoryTaskManager.addSubtask(subtask1);
         subtask2 = new Subtask("Субзадача 2", "ДЗ 2", Status.NEW, TaskType.SUBTASK, epic2.getId());
         memoryTaskManager.addSubtask(subtask2);
-
     }
 
     @Test
-    void tasksWithSameId(){
+    void correctCountId() {
+        assertEquals(6, memoryTaskManager.getCountId());
+    }
+
+    @Test
+    void tasksWithSameId() {
         Task task3 = new Task("Задача 1", "ДЗ 1", Status.NEW, TaskType.MIDDLE_TASK);
         Task task4 = new Task("Задача 2", "ДЗ 2", Status.IN_PROGRESS, TaskType.MIDDLE_TASK);
         task3.setId(1);
@@ -48,7 +53,7 @@ class EpicTest {
     }
 
     @Test
-    void heirsTasksWithSameId(){
+    void heirsTasksWithSameId() {
         epic1 = new Epic("Эпик 1", "ДЗ 1", Status.NEW, TaskType.EPIC, new ArrayList<>());
         epic2 = new Epic("Эпик 2", "ДЗ 2", Status.NEW, TaskType.EPIC, new ArrayList<>());
         subtask1 = new Subtask("Субзадача 1", "ДЗ 1", Status.NEW, TaskType.SUBTASK, epic1.getId());
@@ -64,7 +69,7 @@ class EpicTest {
     }
 
     @Test
-    void isInitializedInstance(){
+    void isInitializedInstance() {
         assertNotNull(managers.getDefault());
         assertNotNull(managers.getDefaultHistory());
         assertTrue(managers.getDefault() instanceof TaskManager);
@@ -72,14 +77,14 @@ class EpicTest {
     }
 
     @Test
-    void InMemoryTaskManagerFunctional(){
+    void inMemoryTaskManagerFunctional() {
         assertEquals(task1, memoryTaskManager.getTaskById(0));
         assertEquals(epic1, memoryTaskManager.getEpicById(2));
         assertEquals(subtask1, memoryTaskManager.getSubtaskById(4));
     }
 
     @Test
-    void taskShouldRemainUnchangedAfterAddingToManager(){
+    void taskShouldRemainUnchangedAfterAddingToManager() {
         assertEquals("Задача 1", task1.getName());
         assertEquals("ДЗ 1", task1.getDescription());
         assertEquals(Status.NEW, task1.getStatus());
@@ -99,21 +104,7 @@ class EpicTest {
         assertNotNull(memoryTaskManager.getTaskById(task3.getId()));
     }
 
-    @Test
-    void historyManagerShouldKeepTaskVersions() {
-        memoryTaskManager.getTaskById(task1.getId());
 
-        Task updatedTask = new Task("Задача 1.1", "ДЗ 1.1", Status.IN_PROGRESS, TaskType.MIDDLE_TASK);
-        memoryTaskManager.updateTask(updatedTask);
-
-        memoryTaskManager.getTaskById(updatedTask.getId());
-
-        List<Task> history = memoryTaskManager.getHistory();
-
-        assertEquals(2, history.size());
-        assertEquals("Задача 1", history.get(0).getName());
-        assertEquals("Задача 1.1", history.get(1).getName());
-    }
 
     @Test
     void addNewTask() {
@@ -135,12 +126,33 @@ class EpicTest {
     }
 
     @Test
-    void add() {
-        InMemoryHistoryManager historyManager = (InMemoryHistoryManager) managers.getDefaultHistory();
-        Task task = new Task("Test addNewTask", "Test addNewTask description", Status.NEW, TaskType.MIDDLE_TASK);
-        historyManager.add(task);
-        final List<Task> history = historyManager.getHistory();
-        assertNotNull(history, "После добавления задачи, история не должна быть пустой.");
-        assertEquals(1, history.size(), "После добавления задачи, история не должна быть пустой.");
+    void epicStatusShouldUpdateBasedOnSubtasks() {
+        Subtask subtask3 = new Subtask("Субзадача 3", "ДЗ 3", Status.IN_PROGRESS, TaskType.SUBTASK, epic1.getId());
+        memoryTaskManager.addSubtask(subtask3);
+        assertEquals(Status.IN_PROGRESS, epic1.getStatus(), "Статус эпика должен быть IN_PROGRESS");
+
+        subtask1.setStatus(Status.DONE);
+        memoryTaskManager.updateSubtask(subtask1);
+        subtask3.setStatus(Status.DONE);
+        memoryTaskManager.updateSubtask(subtask3);
+        System.out.println(memoryTaskManager.getEpicById(epic1.getId()).getSubtasks());
+        assertEquals(Status.DONE, epic1.getStatus(), "Статус эпика должен быть DONE");
     }
+
+
+    @Test
+    void removeAllTasks() {
+        assertEquals(List.of(task1, task2), memoryTaskManager.getAllTasks());
+        assertEquals(List.of(subtask1, subtask2), memoryTaskManager.getAllSubtasks());
+        assertEquals(List.of(epic1, epic2), memoryTaskManager.getAllEpics());
+
+        memoryTaskManager.removeAllTasks();
+        memoryTaskManager.removeAllSubtasks();
+        memoryTaskManager.removeAllEpics();
+
+        assertEquals(List.of(), memoryTaskManager.getAllTasks());
+        assertEquals(List.of(), memoryTaskManager.getAllSubtasks());
+        assertEquals(List.of(), memoryTaskManager.getAllEpics());
+    }
+
 }

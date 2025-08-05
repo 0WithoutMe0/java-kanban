@@ -1,4 +1,4 @@
-package TaskManager;
+package taskmanager.tasks;
 
 public class Task {
 
@@ -9,7 +9,7 @@ public class Task {
     private TaskType type;
 
 
-    Task(String name, String description, Status status, TaskType type){
+    public Task(String name, String description, Status status, TaskType type) {
         this.name = name;
         this.description = description;
         this.status = status;
@@ -48,11 +48,11 @@ public class Task {
         this.type = type;
     }
 
-    public Status getStatus(){
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(Status status){
+    public void setStatus(Status status) {
         this.status = status;
     }
 
