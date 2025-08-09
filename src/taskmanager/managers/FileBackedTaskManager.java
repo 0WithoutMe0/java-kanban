@@ -153,10 +153,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     public static FileBackedTaskManager loadFromFile(Path file) {
         FileBackedTaskManager manager = new FileBackedTaskManager(file);
+        int maxCountId = 0;
         try {
             List<String> dataLines = Files.readAllLines(file);
             for (int i = 1; i < dataLines.size(); i++) {
                 Task task = fromString(dataLines.get(i));
+                maxCountId = Math.max(maxCountId, task.getId());
                 if (task.getType() == TaskType.MIDDLE_TASK) {
                     manager.addTask(task);
                 } else if (task.getType() == TaskType.EPIC) {
@@ -168,6 +170,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         } catch (IOException ex) {
             throw new ManagerSaveException("Не удалось прочитать файл");
         }
+        manager.setCountId(maxCountId);
         return manager;
     }
 }

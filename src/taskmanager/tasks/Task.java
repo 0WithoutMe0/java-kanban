@@ -4,7 +4,7 @@ public class Task {
 
     private String name;
     private String description;
-    private int id;
+    private int id = -1;
     private Status status;
     private TaskType type;
 
