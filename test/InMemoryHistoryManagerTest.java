@@ -67,8 +67,8 @@ public class InMemoryHistoryManagerTest {
 
         List<Task> history = memoryTaskManager.getHistory();
 
-        assertEquals(1, history.size());
-        assertEquals("Задача 1.1", history.get(0).getName());
+        assertEquals(2, history.size());
+        assertEquals("Задача 1.1", history.get(1).getName());
     }
 
 
