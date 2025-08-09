@@ -3,7 +3,6 @@ package taskmanager.managers;
 import taskmanager.exeptions.ManagerSaveException;
 import taskmanager.tasks.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
