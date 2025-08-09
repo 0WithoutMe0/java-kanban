@@ -1,0 +1,8 @@
+id,type,name,status,description,epic
+0,MIDDLE_TASK,Лаба 1,NEW,Сделать лабу 1,
+1,MIDDLE_TASK,Лаба 2,NEW,Сделать лабу 2,
+2,EPIC,Ужин,IN_PROGRESS,Приготовить ужин,
+3,EPIC,Вуз,DONE,Сходить,
+4,SUBTASK,Картошка,DONE,Сварить,2
+5,SUBTASK,Селедка,IN_PROGRESS,Купить,2
+6,SUBTASK,Задача 1,DONE,Проснуться,3
