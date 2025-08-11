@@ -25,6 +25,10 @@ public class InMemoryTaskManager implements TaskManager {
         return countId;
     }
 
+    public void setCountId(int countId) {
+        this.countId = countId;
+    }
+
     @Override
     public ArrayList<Task> getAllTasks() {
         ArrayList<Task> listOfTasks = new ArrayList<>();
@@ -103,21 +107,27 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void addTask(Task task) {
-        task.setId(countId);
-        tasks.put(countId++, task);
+        if (task.getId() < 0) {
+            task.setId(countId++);
+        }
+        tasks.put(task.getId(), task);
     }
 
     @Override
     public void addEpic(Epic epic) {
-        epic.setId(countId);
+        if (epic.getId() < 0) {
+            epic.setId(countId++);
+        }
         epic.updateEpicStatus(); //расчет статуса для эпика
-        epics.put(countId++, epic);
+        epics.put(epic.getId(), epic);
     }
 
     @Override
     public void addSubtask(Subtask subtask) {
-        subtask.setId(countId);
-        subtasks.put(countId++, subtask);
+        if (subtask.getId() < 0) {
+            subtask.setId(countId++);
+        }
+        subtasks.put(subtask.getId(), subtask);
         epics.get(subtask.getEpicId()).getSubtasks().add(subtask); //Внес подзадачу в эпик
         epics.get(subtask.getEpicId()).updateEpicStatus();
     }
