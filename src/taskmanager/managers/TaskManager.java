@@ -4,6 +4,7 @@ package taskmanager.managers;
 import taskmanager.tasks.*;
 
 import java.util.List;
+import java.util.TreeSet;
 
 public interface TaskManager {
     List<Task> getAllTasks();
@@ -43,4 +44,6 @@ public interface TaskManager {
     void removeSubtaskById(int id);
 
     List<Subtask> getListOfEpic(int id);
+
+    TreeSet<Task> getPrioritizedTasks();
 }

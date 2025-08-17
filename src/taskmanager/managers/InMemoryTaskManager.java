@@ -1,10 +1,15 @@
 package taskmanager.managers;
 
+import com.sun.source.tree.Tree;
+import taskmanager.exeptions.TimeException;
 import taskmanager.tasks.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 public class InMemoryTaskManager implements TaskManager {
     private HashMap<Integer, Task> tasks;
@@ -31,32 +36,17 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public ArrayList<Task> getAllTasks() {
-        ArrayList<Task> listOfTasks = new ArrayList<>();
-        for (Task task : tasks.values()) {
-            listOfTasks.add(task);
-        }
-
-        return listOfTasks;
+        return new ArrayList<>(tasks.values());
     }
 
     @Override
     public ArrayList<Epic> getAllEpics() {
-        ArrayList<Epic> listOfEpics = new ArrayList<>();
-        for (Epic epic : epics.values()) {
-            listOfEpics.add(epic);
-        }
-
-        return listOfEpics;
+        return new ArrayList<>(epics.values());
     }
 
     @Override
     public ArrayList<Subtask> getAllSubtasks() {
-        ArrayList<Subtask> listOfSubtasks = new ArrayList<>();
-        for (Subtask subtask : subtasks.values()) {
-            listOfSubtasks.add(subtask);
-        }
-
-        return listOfSubtasks;
+        return new ArrayList<>(subtasks.values());
     }
 
     @Override
@@ -73,6 +63,7 @@ public class InMemoryTaskManager implements TaskManager {
             epic.getSubtasks().clear();
         }
         epics.clear();
+
     }
 
     @Override
@@ -107,6 +98,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void addTask(Task task) {
+        if (isCrossedWithAllTasks(task)) {
+            throw new TimeException("Задача пересекается по времени с существующими");
+        }
         if (task.getId() < 0) {
             task.setId(countId++);
         }
@@ -115,6 +109,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void addEpic(Epic epic) {
+        if (isCrossedWithAllTasks(epic)) {
+            throw new TimeException("Задача пересекается по времени с существующими");
+        }
         if (epic.getId() < 0) {
             epic.setId(countId++);
         }
@@ -123,7 +120,13 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void addSubtask(Subtask subtask) {
+    public void addSubtask(Subtask subtask) throws RuntimeException {
+        if (!epics.containsKey(subtask.getEpicId())) {
+            throw new RuntimeException("Указан несуществующий эпик");
+        }
+        if (isCrossedWithAllTasks(subtask)) {
+            throw new TimeException("Задача пересекается по времени с существующими");
+        }
         if (subtask.getId() < 0) {
             subtask.setId(countId++);
         }
@@ -186,4 +189,49 @@ public class InMemoryTaskManager implements TaskManager {
         return historyManager.getHistory();
     }
 
+    public TreeSet<Task> getPrioritizedTasks() {
+        TreeSet<Task> prioritizedTasks = new TreeSet<>((Task a, Task b) -> {
+            if (a.getStartTime().isBefore(b.getStartTime())) {
+                return 1;
+            }
+            return -1;
+        });
+        for (Task task : tasks.values()) {
+            if (task.getStartTime() != null) {
+                prioritizedTasks.add(task);
+            }
+        }
+        for (Task task : subtasks.values()) {
+            if (task.getStartTime() != null) {
+                prioritizedTasks.add(task);
+            }
+        }
+        return prioritizedTasks;
+    }
+
+    public boolean isCrossed(Task task1, Task task2) {
+        if (task1.getStartTime().equals(LocalDateTime.MIN) || task2.getStartTime().equals(LocalDateTime.MIN)) {
+            return false;
+        }
+        return task2.getStartTime().isBefore(task1.getEndTime())
+                && task1.getStartTime().isBefore(task2.getEndTime());
+    }
+
+    public boolean isCrossedWithAllTasks(Task task) {
+        for (Task task_ : tasks.values()) {
+            if (isCrossed(task, task_)) {
+                return true;
+            }
+        }
+        for (Task subtask_ : subtasks.values()) {
+            if (isCrossed(task, subtask_)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public InMemoryHistoryManager getHistoryManager() {
+        return historyManager;
+    }
 }

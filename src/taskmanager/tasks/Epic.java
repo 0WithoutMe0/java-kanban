@@ -1,5 +1,7 @@
 package taskmanager.tasks;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class Epic extends Task {
@@ -10,6 +12,7 @@ public class Epic extends Task {
     public Epic(String name, String description, Status status, TaskType type, ArrayList<Subtask> subtasks) {
         super(name, description, status, type);
         this.subtasks = subtasks;
+        this.getEndTime();
     }
 
     public ArrayList<Subtask> getSubtasks() {
@@ -19,6 +22,8 @@ public class Epic extends Task {
     public void setSubtasks(ArrayList<Subtask> subtasks) {
         this.subtasks = subtasks;
     }
+
+
 
     public void updateEpicStatus() {
         int countDoneTasks = 0;
@@ -42,6 +47,30 @@ public class Epic extends Task {
             setStatus(Status.NEW);
             System.out.println("Статус большой задачи NEW");
         }
+        getEndTime(); //Решил в Update сделать инициализацию времени
+    }
+
+
+    @Override
+    public LocalDateTime getEndTime() {
+        LocalDateTime startTime = LocalDateTime.MAX;
+        LocalDateTime endTime = LocalDateTime.MIN;
+        Duration duration = Duration.ZERO;
+
+        for (Subtask subtask : subtasks) {
+            if (startTime == null || startTime.isAfter(subtask.getStartTime())) {
+                startTime = subtask.getStartTime();
+            }
+            if (endTime == null || endTime.isBefore(subtask.getStartTime())) {
+                endTime = subtask.getStartTime();
+            }
+            duration.plus(subtask.getDuration());
+        }
+        if(startTime != null) {
+            this.setStartTime(startTime);
+        }
+
+        return endTime;
     }
 
     @Override

@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -104,7 +106,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         ArrayList<Subtask> subtasks = super.getAllSubtasks();
 
         try {
-            Files.write(path, "id,type,name,status,description,epic\n".getBytes());
+            Files.write(path, "id,type,name,status,description,startTime,duration,epic\n".getBytes());
             for (Task task : tasks) {
                 Files.write(path, toString(task).getBytes(), StandardOpenOption.APPEND);
             }
@@ -126,7 +128,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             stringEpicId = String.valueOf((subtask.getEpicId()));
         }
         return task.getId() + "," + task.getType().name() + "," + task.getName() +
-                "," + task.getStatus().name() + "," + task.getDescription() + "," + stringEpicId + "\n";
+                "," + task.getStatus().name() + "," + task.getDescription() + "," + task.getStartTime().toString() +
+                "," + task.getDuration().toString() + "," + stringEpicId + "\n";
     }
 
     static Task fromString(String value) {
@@ -136,17 +139,21 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         String name = split[2];
         Status status = Status.valueOf(split[3]);
         String description = split[4];
+        LocalDateTime startTime = LocalDateTime.parse(split[5]);
+        Duration duration = Duration.parse(split[6]);
         if (type == TaskType.MIDDLE_TASK) {
-            Task task = new Task(name, description, status, type);
+            Task task = new Task(name, description, status, type, startTime, duration);
             task.setId(id);
             return task;
         } else if (type == TaskType.EPIC) {
             Epic epic = new Epic(name, description, status, type, new ArrayList<>());
             epic.setId(id);
+            epic.setStartTime(startTime);
+            epic.setDuration(duration);
             return epic;
         }
-        int epicId = Integer.parseInt(split[5]);
-        Subtask subtask = new Subtask(name, description, status, type, epicId);
+        int epicId = Integer.parseInt(split[7]);
+        Subtask subtask = new Subtask(name, description, status, type, epicId, startTime, duration);
         subtask.setId(id);
         return subtask;
     }
