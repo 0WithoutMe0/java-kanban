@@ -66,7 +66,7 @@ public class Epic extends Task {
             }
             duration.plus(subtask.getDuration());
         }
-        if(startTime != null) {
+        if (startTime != null) {
             this.setStartTime(startTime);
         }
 
