@@ -1,6 +1,5 @@
 package taskmanager.managers;
 
-import com.sun.source.tree.Tree;
 import taskmanager.exeptions.TimeException;
 import taskmanager.tasks.*;
 
@@ -9,7 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.TreeSet;
-import java.util.stream.Collectors;
+
 
 public class InMemoryTaskManager implements TaskManager {
     private HashMap<Integer, Task> tasks;
@@ -217,14 +216,14 @@ public class InMemoryTaskManager implements TaskManager {
                 && task1.getStartTime().isBefore(task2.getEndTime());
     }
 
-    public boolean isCrossedWithAllTasks(Task task) {
-        for (Task task_ : tasks.values()) {
-            if (isCrossed(task, task_)) {
+    public boolean isCrossedWithAllTasks(Task checkTask) {
+        for (Task task : tasks.values()) {
+            if (isCrossed(checkTask, task)) {
                 return true;
             }
         }
-        for (Task subtask_ : subtasks.values()) {
-            if (isCrossed(task, subtask_)) {
+        for (Task subtask : subtasks.values()) {
+            if (isCrossed(checkTask, subtask)) {
                 return true;
             }
         }
