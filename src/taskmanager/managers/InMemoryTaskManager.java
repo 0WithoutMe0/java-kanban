@@ -4,10 +4,7 @@ import taskmanager.exeptions.TimeException;
 import taskmanager.tasks.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.TreeSet;
+import java.util.*;
 
 
 public class InMemoryTaskManager implements TaskManager {
@@ -16,6 +13,10 @@ public class InMemoryTaskManager implements TaskManager {
     private HashMap<Integer, Subtask> subtasks;
 
     private InMemoryHistoryManager historyManager;
+
+    private TreeSet<Task> prioritizedTasks = new TreeSet<>((Task a, Task b) -> {
+        return a.getStartTime().isBefore(b.getStartTime()) ? 1 : -1;
+    });
     private int countId = 0;
 
     public InMemoryTaskManager() {
@@ -50,11 +51,13 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void removeAllTasks() {
+        prioritizedTasks.removeAll(tasks.values());
         tasks.clear();
     }
 
     @Override
     public void removeAllEpics() {
+        prioritizedTasks.removeAll(subtasks.values());
         for (Epic epic : epics.values()) {
             for (Subtask subtask : epic.getSubtasks()) {
                 subtasks.remove(subtask.getId()); // удалить подзадачи из HashMap<Integer, Subtask> subtasks
@@ -71,6 +74,7 @@ public class InMemoryTaskManager implements TaskManager {
             epic.getSubtasks().clear();
             epic.updateEpicStatus();
         }
+        prioritizedTasks.removeAll(subtasks.values());
         subtasks.clear();
     }
 
@@ -104,6 +108,7 @@ public class InMemoryTaskManager implements TaskManager {
             task.setId(countId++);
         }
         tasks.put(task.getId(), task);
+        prioritizedTasks.add(task);
     }
 
     @Override
@@ -132,11 +137,14 @@ public class InMemoryTaskManager implements TaskManager {
         subtasks.put(subtask.getId(), subtask);
         epics.get(subtask.getEpicId()).getSubtasks().add(subtask); //Внес подзадачу в эпик
         epics.get(subtask.getEpicId()).updateEpicStatus();
+        prioritizedTasks.add(subtask);
     }
 
      @Override
      public void updateTask(Task task) {
         tasks.put(task.getId(), task);
+        prioritizedTasks.remove(tasks.get(task.getId()));
+        prioritizedTasks.add(task);
      }
 
     @Override
@@ -148,24 +156,28 @@ public class InMemoryTaskManager implements TaskManager {
     public void updateSubtask(Subtask subtask) {
         subtasks.put(subtask.getId(), subtask);
         epics.get(subtask.getEpicId()).updateEpicStatus();
+        prioritizedTasks.remove(subtasks.get(subtask.getId()));
+        prioritizedTasks.add(subtask);
     }
 
     @Override
     public void removeTaskById(int id) {
         if (tasks.containsKey(id)) {
-            tasks.remove(id);
+            prioritizedTasks.remove(tasks.get(id));
             historyManager.remove(id);
+            tasks.remove(id);
         }
     }
 
     @Override
     public void removeEpicById(int id) {
+        prioritizedTasks.removeAll(epics.get(id).getSubtasks());
         if (epics.containsKey(id)) {
             for (Subtask subtask : epics.get(id).getSubtasks()) {
                 subtasks.remove(subtask.getId()); //удаляю подзадачи
             }
-            epics.remove(id);
             historyManager.remove(id);
+            epics.remove(id);
         }
     }
 
@@ -174,8 +186,9 @@ public class InMemoryTaskManager implements TaskManager {
         if (subtasks.containsKey(id)) {
             epics.get(subtasks.get(id).getEpicId()).getSubtasks().remove(subtasks.get(id)); // удаляю подзадачу из эпика
             epics.get(subtasks.get(id).getEpicId()).updateEpicStatus();// Обнавляю статус эпика
-            subtasks.remove(id);
+            prioritizedTasks.remove(subtasks.get(id));
             historyManager.remove(id);
+            subtasks.remove(id);
         }
     }
 
@@ -188,24 +201,8 @@ public class InMemoryTaskManager implements TaskManager {
         return historyManager.getHistory();
     }
 
-    public TreeSet<Task> getPrioritizedTasks() {
-        TreeSet<Task> prioritizedTasks = new TreeSet<>((Task a, Task b) -> {
-            if (a.getStartTime().isBefore(b.getStartTime())) {
-                return 1;
-            }
-            return -1;
-        });
-        for (Task task : tasks.values()) {
-            if (task.getStartTime() != null) {
-                prioritizedTasks.add(task);
-            }
-        }
-        for (Task task : subtasks.values()) {
-            if (task.getStartTime() != null) {
-                prioritizedTasks.add(task);
-            }
-        }
-        return prioritizedTasks;
+    public List<Task> getPrioritizedTasks() {
+        return new ArrayList<>(prioritizedTasks);
     }
 
     public boolean isCrossed(Task task1, Task task2) {
@@ -230,7 +227,4 @@ public class InMemoryTaskManager implements TaskManager {
         return false;
     }
 
-    public InMemoryHistoryManager getHistoryManager() {
-        return historyManager;
-    }
 }

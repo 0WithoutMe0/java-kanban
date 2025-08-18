@@ -47,7 +47,7 @@ public class Epic extends Task {
             setStatus(Status.NEW);
             System.out.println("Статус большой задачи NEW");
         }
-        getEndTime(); //Решил в Update сделать инициализацию времени
+
     }
 
 
@@ -71,6 +71,11 @@ public class Epic extends Task {
         }
 
         return endTime;
+    }
+
+    public void updateEpicFields() {
+        updateEpicStatus();
+        getEndTime();
     }
 
     @Override
