@@ -8,23 +8,18 @@ import java.util.*;
 
 
 public class InMemoryTaskManager implements TaskManager {
-    private HashMap<Integer, Task> tasks;
-    private HashMap<Integer, Epic> epics;
-    private HashMap<Integer, Subtask> subtasks;
+    private final Map<Integer, Task> tasks = new HashMap<Integer, Task>();
+    private final Map<Integer, Epic> epics = new HashMap<Integer, Epic>();
+    private final Map<Integer, Subtask> subtasks = new HashMap<Integer, Subtask>();
 
-    private InMemoryHistoryManager historyManager;
+    private final HistoryManager historyManager = Managers.getDefaultHistory();
 
     private TreeSet<Task> prioritizedTasks = new TreeSet<>((Task a, Task b) -> {
         return a.getStartTime().isBefore(b.getStartTime()) ? 1 : -1;
     });
     private int countId = 0;
 
-    public InMemoryTaskManager() {
-        tasks = new HashMap<Integer, Task>();
-        epics = new HashMap<Integer, Epic>();
-        subtasks = new HashMap<Integer, Subtask>();
-        historyManager = (InMemoryHistoryManager) Managers.getDefaultHistory();
-    }
+
 
     public int getCountId() {
         return countId;
@@ -108,7 +103,9 @@ public class InMemoryTaskManager implements TaskManager {
             task.setId(countId++);
         }
         tasks.put(task.getId(), task);
-        prioritizedTasks.add(task);
+        if (!task.getStartTime().equals(LocalDateTime.MIN)) {
+            prioritizedTasks.add(task);
+        }
     }
 
     @Override
@@ -137,14 +134,18 @@ public class InMemoryTaskManager implements TaskManager {
         subtasks.put(subtask.getId(), subtask);
         epics.get(subtask.getEpicId()).getSubtasks().add(subtask); //Внес подзадачу в эпик
         epics.get(subtask.getEpicId()).updateEpicStatus();
-        prioritizedTasks.add(subtask);
+        if (!subtask.getStartTime().equals(LocalDateTime.MIN)) {
+            prioritizedTasks.add(subtask);
+        }
     }
 
      @Override
      public void updateTask(Task task) {
         tasks.put(task.getId(), task);
-        prioritizedTasks.remove(tasks.get(task.getId()));
-        prioritizedTasks.add(task);
+        if (!task.getStartTime().equals(LocalDateTime.MIN)) {
+            prioritizedTasks.remove(tasks.get(task.getId()));
+            prioritizedTasks.add(task);
+        }
      }
 
     @Override
@@ -156,8 +157,10 @@ public class InMemoryTaskManager implements TaskManager {
     public void updateSubtask(Subtask subtask) {
         subtasks.put(subtask.getId(), subtask);
         epics.get(subtask.getEpicId()).updateEpicStatus();
-        prioritizedTasks.remove(subtasks.get(subtask.getId()));
-        prioritizedTasks.add(subtask);
+        if (!subtask.getStartTime().equals(LocalDateTime.MIN)) {
+            prioritizedTasks.remove(subtasks.get(subtask.getId()));
+            prioritizedTasks.add(subtask);
+        }
     }
 
     @Override
