@@ -5,6 +5,7 @@ import taskmanager.tasks.*;
 
 import java.util.List;
 
+
 public interface TaskManager {
     List<Task> getAllTasks();
 
@@ -43,4 +44,6 @@ public interface TaskManager {
     void removeSubtaskById(int id);
 
     List<Subtask> getListOfEpic(int id);
+
+    List<Task> getPrioritizedTasks();
 }

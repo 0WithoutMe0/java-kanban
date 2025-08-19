@@ -4,6 +4,9 @@ package taskmanager;
 import taskmanager.managers.InMemoryTaskManager;
 import taskmanager.managers.TaskManager;
 import taskmanager.tasks.*;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class Main {
@@ -17,11 +20,11 @@ public class Main {
         taskManager.addEpic(epic1);
         Epic epic2 = new Epic("Вуз", "Сходить", Status.NEW, TaskType.EPIC, new ArrayList<>());
         taskManager.addEpic(epic2);
-        Subtask subtask1 = new Subtask("Картошка", "Сварить", Status.NEW, TaskType.SUBTASK, epic1.getId());
+        Subtask subtask1 = new Subtask("Картошка", "Сварить", Status.NEW, TaskType.SUBTASK, epic1.getId(), LocalDateTime.now(), Duration.ofMinutes(10));
         taskManager.addSubtask(subtask1);
-        Subtask subtask2 = new Subtask("Селедка", "Купить", Status.NEW, TaskType.SUBTASK, epic1.getId());
+        Subtask subtask2 = new Subtask("Селедка", "Купить", Status.NEW, TaskType.SUBTASK, epic1.getId(), LocalDateTime.now().plusMinutes(20), Duration.ofMinutes(10));
         taskManager.addSubtask(subtask2);
-        Subtask subtask3 = new Subtask("Задача 1", "Проснуться", Status.NEW, TaskType.SUBTASK, epic2.getId());
+        Subtask subtask3 = new Subtask("Задача 1", "Проснуться", Status.NEW, TaskType.SUBTASK, epic2.getId(),LocalDateTime.now().plusMinutes(40), Duration.ofMinutes(10));
         taskManager.addSubtask(subtask3);
 
 

@@ -4,15 +4,14 @@ package taskmanager.managers;
 import taskmanager.tasks.*;
 import java.util.*;
 
-public class InMemoryHistoryManager implements HistoryManager {
-
+public class InMemoryHistoryManager  implements HistoryManager {
 
     private final Map<Integer, Node> nodeMap;
     private Node head;
     private Node tail;
 
 
-    InMemoryHistoryManager() {
+    public InMemoryHistoryManager() {
         nodeMap = new HashMap<>();
     }
 
@@ -79,4 +78,6 @@ public class InMemoryHistoryManager implements HistoryManager {
          //список доступен только для чтения
          return getTasks();
     }
+
+
 }

@@ -8,25 +8,23 @@ import taskmanager.tasks.*;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-public class FileBackedTaskManagerTest {
+public class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager>{
 
-    FileBackedTaskManager fileManager;
-    Task task1;
-    Task task2;
-    Subtask subtask1;
-    Subtask subtask2;
-    Epic epic1;
-    Epic epic2;
-
-    @BeforeEach
-    void beforeEach() throws IOException {
-        fileManager = Managers.getDefaultFileBacked(Files.createTempFile("temporary", ".txt"));
+    protected FileBackedTaskManager createTaskManager() {
+        return new FileBackedTaskManager(Paths.get("temporary.txt"));
     }
+
+
 
     @Test
     void shouldLoadEmptyFile() {
+        FileBackedTaskManager fileManager = Managers.getDefaultFileBacked(Paths.get("temporary_.txt"));
         fileManager.save();
 
         FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(fileManager.getPath());
@@ -38,21 +36,10 @@ public class FileBackedTaskManagerTest {
 
     @Test
     void shouldSaveAndLoadTasks() {
-        task1 = new Task("Задача 1", "ДЗ 1", Status.NEW, TaskType.MIDDLE_TASK);
-        fileManager.addTask(task1);
-        task2 = new Task("Задача 2", "ДЗ 2", Status.NEW, TaskType.MIDDLE_TASK);
-        fileManager.addTask(task2);
-        epic1 = new Epic("Эпик 1", "ДЗ 1", Status.NEW, TaskType.EPIC, new ArrayList<>());
-        fileManager.addEpic(epic1);
-        epic2 = new Epic("Эпик 2", "ДЗ 2", Status.NEW, TaskType.EPIC, new ArrayList<>());
-        fileManager.addEpic(epic2);
-        subtask1 = new Subtask("Субзадача 1", "ДЗ 1", Status.NEW, TaskType.SUBTASK, epic1.getId());
-        fileManager.addSubtask(subtask1);
-        subtask2 = new Subtask("Субзадача 2", "ДЗ 2", Status.NEW, TaskType.SUBTASK, epic2.getId());
-        fileManager.addSubtask(subtask2);
 
 
-        FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(fileManager.getPath());
+
+        FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(getTaskManager().getPath());
 
         Assertions.assertEquals(2, loadedManager.getAllTasks().size());
         Assertions.assertEquals(2, loadedManager.getAllEpics().size());

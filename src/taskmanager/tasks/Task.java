@@ -1,5 +1,8 @@
 package taskmanager.tasks;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 public class Task {
 
     private String name;
@@ -8,6 +11,20 @@ public class Task {
     private Status status;
     private TaskType type;
 
+    private Duration duration = Duration.ZERO;
+
+    private LocalDateTime startTime = LocalDateTime.MIN;
+
+
+    public Task(String name, String description, Status status, TaskType type, LocalDateTime startTime,
+                Duration duration) {
+        this.name = name;
+        this.description = description;
+        this.status = status;
+        this.type = type;
+        this.startTime = startTime;
+        this.duration = duration;
+    }
 
     public Task(String name, String description, Status status, TaskType type) {
         this.name = name;
@@ -57,6 +74,10 @@ public class Task {
         this.status = status;
     }
 
+    public LocalDateTime getEndTime() {
+        return startTime.plus(duration);
+    }
+
     @Override
     public int hashCode() {
         return this.id;
@@ -80,5 +101,21 @@ public class Task {
 
         Task task = (Task) o;
         return id == task.id;
+    }
+
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
     }
 }

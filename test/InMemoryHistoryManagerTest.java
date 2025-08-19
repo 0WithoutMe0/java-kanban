@@ -10,34 +10,16 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class InMemoryHistoryManagerTest {
+public class InMemoryHistoryManagerTest extends DataForTest{
 
-    Managers managers;
     InMemoryTaskManager memoryTaskManager;
-    Task task1;
-    Task task2;
-    Subtask subtask1;
-    Subtask subtask2;
-    Epic epic1;
-    Epic epic2;
+
 
 
     @BeforeEach
     void beforeEach() {
-        managers = new Managers();
-        memoryTaskManager = (InMemoryTaskManager) managers.getDefault();
-        task1 = new Task("Задача 1", "ДЗ 1", Status.NEW, TaskType.MIDDLE_TASK);
-        memoryTaskManager.addTask(task1);
-        task2 = new Task("Задача 2", "ДЗ 2", Status.NEW, TaskType.MIDDLE_TASK);
-        memoryTaskManager.addTask(task2);
-        epic1 = new Epic("Эпик 1", "ДЗ 1", Status.NEW, TaskType.EPIC, new ArrayList<>());
-        memoryTaskManager.addEpic(epic1);
-        epic2 = new Epic("Эпик 2", "ДЗ 2", Status.NEW, TaskType.EPIC, new ArrayList<>());
-        memoryTaskManager.addEpic(epic2);
-        subtask1 = new Subtask("Субзадача 1", "ДЗ 1", Status.NEW, TaskType.SUBTASK, epic1.getId());
-        memoryTaskManager.addSubtask(subtask1);
-        subtask2 = new Subtask("Субзадача 2", "ДЗ 2", Status.NEW, TaskType.SUBTASK, epic2.getId());
-        memoryTaskManager.addSubtask(subtask2);
+        memoryTaskManager = (InMemoryTaskManager) Managers.getDefault();
+        initializeCommonTestData(memoryTaskManager);
     }
 
 
@@ -94,5 +76,26 @@ public class InMemoryHistoryManagerTest {
 
         memoryTaskManager.getSubtaskById(subtask1.getId());
         assertEquals(List.of(epic1, subtask1), memoryTaskManager.getHistory());
+    }
+
+    @Test
+    void bordersTest() {
+        //Начало и конец
+        memoryTaskManager.getTaskById(task1.getId());
+        memoryTaskManager.getTaskById(task2.getId());
+        memoryTaskManager.getEpicById(epic2.getId());
+        memoryTaskManager.getSubtaskById(subtask1.getId());
+        memoryTaskManager.getSubtaskById(subtask2.getId());
+
+
+        memoryTaskManager.removeTaskById(task1.getId());
+        assertEquals(List.of(task2, epic2, subtask1, subtask2), memoryTaskManager.getHistory());
+
+        memoryTaskManager.removeSubtaskById(subtask2.getId());
+        assertEquals(List.of(task2, epic2, subtask1), memoryTaskManager.getHistory());
+
+        memoryTaskManager.removeEpicById(epic2.getId());
+        assertEquals(List.of(task2, subtask1), memoryTaskManager.getHistory());
+
     }
 }
