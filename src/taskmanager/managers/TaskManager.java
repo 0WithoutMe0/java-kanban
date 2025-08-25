@@ -46,4 +46,9 @@ public interface TaskManager {
     List<Subtask> getListOfEpic(int id);
 
     List<Task> getPrioritizedTasks();
+
+    public boolean isCrossedWithAllTasks(Task checkTask);
+
+    public List<Task> getHistory();
+
 }

@@ -1,5 +1,6 @@
 package taskmanager.managers;
 
+import taskmanager.exeptions.NotFoundException;
 import taskmanager.exeptions.TimeException;
 import taskmanager.tasks.*;
 
@@ -15,7 +16,7 @@ public class InMemoryTaskManager implements TaskManager {
     private final HistoryManager historyManager = Managers.getDefaultHistory();
 
     private TreeSet<Task> prioritizedTasks = new TreeSet<>((Task a, Task b) -> {
-        return a.getStartTime().isBefore(b.getStartTime()) ? 1 : -1;
+        return a.getStartTime().isBefore(b.getStartTime()) ? -1 : 1;
     });
     private int countId = 0;
 
@@ -31,16 +32,25 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public ArrayList<Task> getAllTasks() {
+        if (tasks == null) {
+            throw new NotFoundException("Tasks NOT FOUND");
+        }
         return new ArrayList<>(tasks.values());
     }
 
     @Override
     public ArrayList<Epic> getAllEpics() {
+        if (epics == null) {
+            throw new NotFoundException("Epics NOT FOUND");
+        }
         return new ArrayList<>(epics.values());
     }
 
     @Override
     public ArrayList<Subtask> getAllSubtasks() {
+        if (subtasks == null) {
+            throw new NotFoundException("Subtasks NOT FOUND");
+        }
         return new ArrayList<>(subtasks.values());
     }
 
@@ -75,6 +85,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task getTaskById(int id) {
+        if (!tasks.containsKey(id)) {
+            throw new NotFoundException("Task NOT FOUND");
+        }
         Task task = tasks.get(id);
         historyManager.add(task);
         return task;
@@ -82,6 +95,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Epic getEpicById(int id) {
+        if (!epics.containsKey(id)) {
+            throw new NotFoundException("Epic NOT FOUND");
+        }
         Epic epic = epics.get(id);
         historyManager.add(epic);
         return epic;
@@ -89,6 +105,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Subtask getSubtaskById(int id) {
+        if (!subtasks.containsKey(id)) {
+            throw new NotFoundException("Subtask NOT FOUND");
+        }
         Subtask subtask = subtasks.get(id);
         historyManager.add(subtask);
         return subtask;

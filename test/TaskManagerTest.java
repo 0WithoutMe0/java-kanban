@@ -62,8 +62,8 @@ abstract class TaskManagerTest<T extends TaskManager> extends DataForTest {
 
     @Test
     void taskShouldRemainUnchangedAfterAddingToManager() {
-        assertEquals("Задача 1", task1.getName());
-        assertEquals("ДЗ 1", task1.getDescription());
+        assertEquals("Task1", task1.getName());
+        assertEquals("Homework 1", task1.getDescription());
         assertEquals(Status.NEW, task1.getStatus());
         assertEquals(TaskType.MIDDLE_TASK, task1.getType());
     }
@@ -77,6 +77,5 @@ abstract class TaskManagerTest<T extends TaskManager> extends DataForTest {
     public void setTaskManager(T taskManager) {
         this.taskManager = taskManager;
     }
-
 
 }
