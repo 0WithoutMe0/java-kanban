@@ -6,7 +6,6 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import taskmanager.adapter.DurationAdapter;
 import taskmanager.adapter.LocalDateTimeAdapter;
-import taskmanager.managers.InMemoryTaskManager;
 import taskmanager.managers.TaskManager;
 import taskmanager.tasks.Task;
 
@@ -42,7 +41,7 @@ public class HistoryHandler implements HttpHandler {
         }
     }
 
-    private void handleGetHistory(HttpExchange exchange) throws IOException{
+    private void handleGetHistory(HttpExchange exchange) throws IOException {
         List<Task> history = taskManager.getHistory();
         String response = gson.toJson(history);
         exchange.getResponseHeaders().set("Content-Type", "application/json");
