@@ -1,21 +1,12 @@
 package taskmanager.handler;
 
-import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import com.google.gson.Gson;
-import taskmanager.adapter.DurationAdapter;
-import taskmanager.adapter.LocalDateTimeAdapter;
-import taskmanager.managers.InMemoryTaskManager;
 import taskmanager.managers.TaskManager;
-import taskmanager.tasks.Status;
 import taskmanager.tasks.Task;
-import taskmanager.tasks.TaskType;
+
 
 import java.io.IOException;
-import java.io.OutputStream;
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.List;
 
 public class TasksHandler extends BaseHttpHandler<Task> implements HttpHandler {

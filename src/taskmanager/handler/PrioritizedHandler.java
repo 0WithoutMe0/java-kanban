@@ -41,7 +41,7 @@ public class PrioritizedHandler implements HttpHandler {
         }
     }
 
-    private void handleGetHistory(HttpExchange exchange) throws IOException{
+    private void handleGetHistory(HttpExchange exchange) throws IOException {
         List<Task> prioritized = taskManager.getPrioritizedTasks();
         String response = gson.toJson(prioritized);
         exchange.getResponseHeaders().set("Content-Type", "application/json");
