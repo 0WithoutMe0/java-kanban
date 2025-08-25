@@ -1,4 +1,4 @@
-package taskmanager.service;
+package taskmanager.server;
 
 
 import com.sun.net.httpserver.HttpServer;
@@ -18,7 +18,7 @@ public class HttpTaskServer {
         this.taskManager = taskManager;
     }
 
-    public void start() throws IOException{
+    public void start() throws IOException {
         server = HttpServer.create(new InetSocketAddress(PORT), 0);
         server.createContext("/tasks", new TasksHandler(taskManager));
         server.createContext("/subtasks", new SubtasksHandler(taskManager));
@@ -30,7 +30,7 @@ public class HttpTaskServer {
         System.out.println("Сервер успешно запущен");
     }
 
-    public void stop() throws IOException{
+    public void stop() throws IOException {
         server.stop(0);
     }
 

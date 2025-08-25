@@ -7,7 +7,7 @@ import taskmanager.adapter.DurationAdapter;
 import taskmanager.adapter.LocalDateTimeAdapter;
 import taskmanager.managers.Managers;
 import taskmanager.managers.TaskManager;
-import taskmanager.service.HttpTaskServer;
+import taskmanager.server.HttpTaskServer;
 
 import java.io.IOException;
 import java.net.URI;
