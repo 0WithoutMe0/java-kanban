@@ -164,9 +164,14 @@ public abstract class BaseHttpHandler<T extends Task> implements HttpHandler {
     }
 
     protected abstract List<T> getAll();
+
     protected abstract T getById(int id);
+
     protected abstract void add(T task);
+
     protected abstract void update(T task);
+
     protected abstract void delete(int id);
+
     protected abstract boolean hasOverlaps(T task);
 }
